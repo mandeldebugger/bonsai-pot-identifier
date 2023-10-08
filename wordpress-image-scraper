@@ -1,0 +1,84 @@
+import bs4
+import requests
+import shutil
+import os
+
+size = int(input('How Many Images: '))
+
+while True:
+    choice = input("Which pot DB do you want to use?\n    1) Chinese\n    2) Other-Japanese\n    3) Tokoname\n    > Answer(1, 2 or 3): ")
+    if choice.lower() == "1" or choice.lower() == 'CHINESE':
+                        CHINESE  = \
+                            'https://japanesebonsaipots.net/chinese-chops-and-artist-marks/'
+                        break
+    if choice.lower() == "2" or choice.lower() == 'OTHERS':
+                        OTHERS = \
+                            'https://japanesebonsaipots.net/japanese-artist-marks-and-hanko/'
+                        break
+    if choice.lower() == "3" or choice.lower() == 'TOKONAME':
+                        TOKONAME = \
+                            'https://japanesebonsaipots.net/tokoname-artist-marks-and-hanko/'
+                        break
+    else:
+        print("\n Wrong input, try again", 'red')
+                        #time.sleep(3)
+                        #clrscr()
+        continue                    
+
+def extract(size):
+    
+    while True:
+        ans = choice
+        if ans == '1':
+            URL_input = CHINESE
+            print('Fetching from url =', URL_input)
+            break
+        if ans == '2':    
+            URL_input = OTHERS
+            print('Fetching from url =', URL_input)
+            break
+        if ans == '3':
+            URL_input = TOKONAME
+            print('Fetching from url =', URL_input)
+            break
+                   
+    URLdata = requests.get(URL_input)
+    soup = bs4.BeautifulSoup(URLdata.text, "html.parser")
+    imageTags = soup.find_all('img')
+    tagsLength = len(imageTags)
+    print("Found " + str(tagsLength) + " elements")
+    
+    i = 0
+    
+    while i < size:
+
+        for link in imageTags:
+            try:
+                #figureTag = soup.find("figure")
+                imageLink = link["data-orig-file"]
+                print(imageLink)
+                #potMaker = link[""]
+                ext = imageLink[imageLink.rindex('.'):]
+                if ext.startswith('.png'):
+                    ext = '.png'
+                elif ext.startswith('.jpg'):
+                    ext = '.jpg'
+                elif ext.startswith('.jfif'):
+                    ext = '.jfif'
+                elif ext.startswith('.com'):
+                    ext = '.jpg'
+                elif ext.startswith('.svg'):
+                    ext = '.svg'
+                elif ext.startswith('.jpeg'):
+                    ext = '.jpg'
+                data = requests.get(imageLink, stream=True)
+                filename = imageLink.split('/')[-1].split("?")[0]
+                with open(filename, 'wb') as file:
+                    shutil.copyfileobj(data.raw, file)
+                    print("Wrote " + filename)
+                i += 1
+            except:
+                pass
+    print("\t\t\t Downloaded Successful with " + str(tagsLength) + " items\t\t ")
+
+extract(size)
