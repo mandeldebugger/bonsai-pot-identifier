@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+
+import numpy as np
+import cv2 as cv
+import os
+import time
+import pathlib
+import matplotlib.pyplot as plt
+from tkinter import Tk     # from tkinter import Tk for Python 3.x
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilenames
+
+
+"""
+Loop over picture files in the current directory using 
+different thresholding techniques provided by the user 
+to find bounding boxes in images.
+Output each image, showing the technique used.
+"""
+TECHNIQUE = ""
+WORKINGDIR = os.getcwd()
+RAISECONTRAST = 'false'
+BLUR = 'false'
+
+"""""
+We'll take one file the the user provides first which will be the mystery chop mark
+Then well ask the user to select a range of possible matches to compare it against for a match
+"""""
+USERFILE = ""
+POSSIBLEMATCHES = []
+               
+def matchAndCompare(userImage, galleryImage):                   
+
+    #plt.imshow(userImage, 'userImage'),plt.show()
+    #plt.imshow(galleryImage, 'galleryImage'),plt.show()
+    # Initiate SIFT detector
+    print("initiating SIFT")
+    sift = cv.SIFT()
+
+    print("Getting keypoints and descriptors")
+    # find the keypoints and descriptors with SIFT
+    kp1, des1 = sift.detectAndCompute(userImage,None)
+    kp2, des2 = sift.detectAndCompute(galleryImage,None)
+
+    FLANN_INDEX_KDTREE = 0
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks = 50)
+
+    print("Getting Flann matches")
+    flann = cv.FlannBasedMatcher(index_params, search_params)
+
+    matches = flann.knnMatch(des1,des2,k=2)
+
+    print("Iterating through good matches")
+    # store all the good matches as per Lowe's ratio test.
+    good = []
+    for m,n in matches:
+        if m.distance < 0.7*n.distance:
+            good.append(m)
+
+    
+    if len(good)>MIN_MATCH_COUNT:
+        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
+
+        M, mask = cv.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+        matchesMask = mask.ravel().tolist()
+
+        h,w = userImage.shape
+        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+        dst = cv.perspectiveTransform(pts,M)
+
+        img2 = cv.polylines(galleryImage,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+
+    else:
+        print("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
+        
+    draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+                   singlePointColor = None,
+                   matchesMask = matchesMask, # draw only inliers
+                   flags = 2)
+
+    img3 = cv.drawMatches(userImage,kp1,img2,kp2,good,None,**draw_params)
+    
+    plt.imshow(img3, 'gray'),plt.show()
+    
+input("Press any key to choose your unmatched file")
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+USERFILE = askopenfilename() # show an "Open" dialog box and return the path to the selected file    
+print("Chosen file for matching is " + USERFILE)
+
+input("Choose your gallery list of possible template matches and I'll score them")
+POSSIBLEMATCHES = askopenfilenames(initialdir=os.getcwd(), title="Select candidate matches")
+for i in range(0, len(POSSIBLEMATCHES)):    
+    print("Candidate match (" + str(i+1) + ") is " + POSSIBLEMATCHES[i])
+        
+for i in range(0, len(POSSIBLEMATCHES)):
+
+    galleryImage = cv.imread(POSSIBLEMATCHES[i])
+    userImage = cv.imread(USERFILE)
+    
+    greyScaledUserImage = cv.cvtColor(userImage, cv.COLOR_BGR2GRAY)
+    greyScaledGalleryImage = cv.cvtColor(galleryImage, cv.COLOR_BGR2GRAY)
+    
+    # create a CLAHE object (Arguments are optional).
+    clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    claheAppliedUserImage = clahe.apply(greyScaledUserImage)
+    claheAppliedGalleryImage = clahe.apply(greyScaledGalleryImage)
+    
+    # All images must be greyscaled. Image matching doesn't work without this.
+    #greyScaledUserImage = cv.cvtColor(claheAppliedUserImage, cv.COLOR_BGR2GRAY)
+    #greyScaledGalleryImage = cv.cvtColor(claheAppliedGalleryImage, cv.COLOR_BGR2GRAY)
+    
+    plt.imshow(claheAppliedUserImage,cmap="gray"),plt.show()
+    plt.imshow(claheAppliedGalleryImage,cmap="gray"),plt.show()
+    
+    matchAndCompare(greyScaledUserImage, greyScaledGalleryImage)
+    
+cv.waitKey(0)
+cv.destroyAllWindows()
