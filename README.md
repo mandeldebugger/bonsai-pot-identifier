@@ -1,5 +1,6 @@
 # bonsai-pot-identifier
-This code downloads a list of bonsai pot "chop" marks and then visually identifies your pot mark from the list
+This code downloads a list of bonsai pot "chop" marks and then visually identifies your pot mark from a provded gallery set of possible matching "chop" marks.
+Currently uses SIFT on greyscaled images.
 
 | User Image | Gallery Image |
 | ---------- | ------------- |
