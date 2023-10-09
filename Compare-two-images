@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import numpy as np
 import cv2 as cv
 import os
@@ -9,7 +8,6 @@ import matplotlib.pyplot as plt
 from tkinter import Tk     # from tkinter import Tk for Python 3.x
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askopenfilenames
-
 
 """
 Loop over picture files in the current directory using 
@@ -29,36 +27,68 @@ Then well ask the user to select a range of possible matches to compare it again
 USERFILE = ""
 POSSIBLEMATCHES = []
                
-def matchAndCompare(userImage, galleryImage):                   
-
-    #plt.imshow(userImage, 'userImage'),plt.show()
-    #plt.imshow(galleryImage, 'galleryImage'),plt.show()
+def matchAndCompare(userImage, userText, galleryImage, galleryText):
+    
+    userPath, userFile = os.path.split(userText)
+    galleryPath, galleryFile = os.path.split(galleryText)
+    
+    # font 
+    font = cv.FONT_HERSHEY_SIMPLEX
+  
+    # org 
+    org = (75, 75) 
+  
+    # fontScale 
+    fontScale = 1
+   
+    # Blue color in BGR 
+    color = (0, 0, 0) 
+  
+    # Line thickness of 2 px 
+    thickness = 1
+   
+    
     # Initiate SIFT detector
-    print("initiating SIFT")
-    sift = cv.SIFT()
-
-    print("Getting keypoints and descriptors")
-    # find the keypoints and descriptors with SIFT
+    sift=cv.SIFT_create()
+    
+    # find the keypoints and descriptors with SURF
     kp1, des1 = sift.detectAndCompute(userImage,None)
     kp2, des2 = sift.detectAndCompute(galleryImage,None)
-
-    FLANN_INDEX_KDTREE = 0
-    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-    search_params = dict(checks = 50)
-
-    print("Getting Flann matches")
-    flann = cv.FlannBasedMatcher(index_params, search_params)
-
-    matches = flann.knnMatch(des1,des2,k=2)
-
-    print("Iterating through good matches")
-    # store all the good matches as per Lowe's ratio test.
-    good = []
-    for m,n in matches:
-        if m.distance < 0.7*n.distance:
-            good.append(m)
-
     
+    # BFMatcher with default params
+    bf = cv.BFMatcher()
+    matches = bf.knnMatch(des1,des2, k=2)
+
+
+    # Apply ratio test
+    good = []
+    percent = 0
+    for m,n in matches:
+        #if m.distance < 0.75*n.distance:
+        if m.distance < 0.90*n.distance:
+            good.append([m])
+            a=len(good)
+            percent=(a*100)/len(kp2)
+            #print("{} % similarity".format(percent))
+        #if percent >= 75.00:
+            #print('Match Found')
+            
+    # Using cv2.putText() method 
+    userImage = cv.putText(userImage, userFile, org, font, fontScale, color, thickness, cv.LINE_AA)
+    galleryImage = cv.putText(galleryImage, galleryFile, org, font, fontScale, color, thickness, cv.LINE_AA)
+    
+    print("Your image:")
+    plt.imshow(userImage,cmap="gray"),plt.show()
+    print("Offered match:")
+    plt.imshow(galleryImage,cmap="gray"),plt.show()
+    
+    print("Results: " + userFile + " and " + galleryFile + " are {} % similar".format(percent))
+    img3 = cv.drawMatchesKnn(userImage,kp1,galleryImage,kp2,good,None,flags=2)
+        
+    plt.imshow(img3),plt.show()
+    
+
+    """""
     if len(good)>MIN_MATCH_COUNT:
         src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
         dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
@@ -83,13 +113,14 @@ def matchAndCompare(userImage, galleryImage):
     img3 = cv.drawMatches(userImage,kp1,img2,kp2,good,None,**draw_params)
     
     plt.imshow(img3, 'gray'),plt.show()
-    
-input("Press any key to choose your unmatched file")
+    """""
+
+input("Press enter to choose your unmatched file")
 Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
 USERFILE = askopenfilename() # show an "Open" dialog box and return the path to the selected file    
 print("Chosen file for matching is " + USERFILE)
 
-input("Choose your gallery list of possible template matches and I'll score them")
+input("Press enter agaion to choose your gallery list of possible template matches and I'll score them")
 POSSIBLEMATCHES = askopenfilenames(initialdir=os.getcwd(), title="Select candidate matches")
 for i in range(0, len(POSSIBLEMATCHES)):    
     print("Candidate match (" + str(i+1) + ") is " + POSSIBLEMATCHES[i])
@@ -107,14 +138,10 @@ for i in range(0, len(POSSIBLEMATCHES)):
     claheAppliedUserImage = clahe.apply(greyScaledUserImage)
     claheAppliedGalleryImage = clahe.apply(greyScaledGalleryImage)
     
-    # All images must be greyscaled. Image matching doesn't work without this.
-    #greyScaledUserImage = cv.cvtColor(claheAppliedUserImage, cv.COLOR_BGR2GRAY)
-    #greyScaledGalleryImage = cv.cvtColor(claheAppliedGalleryImage, cv.COLOR_BGR2GRAY)
+    #plt.imshow(claheAppliedUserImage,cmap="gray"),plt.show()
+    #plt.imshow(claheAppliedGalleryImage,cmap="gray"),plt.show()
     
-    plt.imshow(claheAppliedUserImage,cmap="gray"),plt.show()
-    plt.imshow(claheAppliedGalleryImage,cmap="gray"),plt.show()
-    
-    matchAndCompare(greyScaledUserImage, greyScaledGalleryImage)
+    matchAndCompare(greyScaledUserImage, USERFILE, greyScaledGalleryImage, str(POSSIBLEMATCHES[i]))
     
 cv.waitKey(0)
 cv.destroyAllWindows()
