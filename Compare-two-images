@@ -9,6 +9,8 @@ from tkinter import Tk     # from tkinter import Tk for Python 3.x
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askopenfilenames
 
+
+
 """
 Loop over picture files in the current directory using 
 different thresholding techniques provided by the user 
@@ -26,17 +28,42 @@ Then well ask the user to select a range of possible matches to compare it again
 """""
 USERFILE = ""
 POSSIBLEMATCHES = []
-               
+
+def imageResizer(userImage, galleryImage):
+    
+    # get each pictures dimensions
+    uh, uw, uc = userImage.shape
+    gh, gw, gc = galleryImage.shape
+    
+    resizedUserImage = userImage
+    resizedgalleryImage = galleryImage
+    
+    if ((uh*uw) < (gh*gw)): #user image is the larger
+        dim = (gw, gh)
+        resizedUserImage = cv.resize(userImage, dim, interpolation = cv.INTER_AREA)
+        #plt.imshow(resizedUserImage),plt.show()
+        #plt.imshow(galleryImage),plt.show()
+        return resizedUserImage, galleryImage
+    elif ((gh*gw) < (uh*uw)): #gallery image is the larger
+        dim = (uw, uh)
+        resizedGalleryImage = cv.resize(galleryImage, dim, interpolation = cv.INTER_AREA)
+        #plt.imshow(userImage),plt.show()
+        #plt.imshow(resizedGalleryImage),plt.show()
+        return userImage, resizedGalleryImage
+    #return None
+    
+        
 def matchAndCompare(userImage, userText, galleryImage, galleryText):
     
     userPath, userFile = os.path.split(userText)
     galleryPath, galleryFile = os.path.split(galleryText)
-    
+                 
+    """""
     # font 
     font = cv.FONT_HERSHEY_SIMPLEX
   
     # org 
-    org = (75, 75) 
+    org = (10, 40) 
   
     # fontScale 
     fontScale = 1
@@ -45,13 +72,13 @@ def matchAndCompare(userImage, userText, galleryImage, galleryText):
     color = (0, 0, 0) 
   
     # Line thickness of 2 px 
-    thickness = 1
-   
+    thickness = 2
+    """""
     
     # Initiate SIFT detector
     sift=cv.SIFT_create()
     
-    # find the keypoints and descriptors with SURF
+    # find the keypoints and descriptors with SIFT
     kp1, des1 = sift.detectAndCompute(userImage,None)
     kp2, des2 = sift.detectAndCompute(galleryImage,None)
     
@@ -74,46 +101,26 @@ def matchAndCompare(userImage, userText, galleryImage, galleryText):
             #print('Match Found')
             
     # Using cv2.putText() method 
-    userImage = cv.putText(userImage, userFile, org, font, fontScale, color, thickness, cv.LINE_AA)
-    galleryImage = cv.putText(galleryImage, galleryFile, org, font, fontScale, color, thickness, cv.LINE_AA)
+    #userImage = cv.putText(userImage, userFile, org, font, fontScale, color, thickness, cv.LINE_AA)
+    #galleryImage = cv.putText(galleryImage, galleryFile, org, font, fontScale, color, thickness, cv.LINE_AA)
     
     print("Your image:")
-    plt.imshow(userImage,cmap="gray"),plt.show()
+    
+    img1 = cv.imread(userText)
+    img2 = cv.imread(galleryText)
+    
+    plt.imshow(img1),plt.show()
     print("Offered match:")
-    plt.imshow(galleryImage,cmap="gray"),plt.show()
+    plt.imshow(img2),plt.show()
     
-    print("Results: " + userFile + " and " + galleryFile + " are {} % similar".format(percent))
-    img3 = cv.drawMatchesKnn(userImage,kp1,galleryImage,kp2,good,None,flags=2)
-        
-    plt.imshow(img3),plt.show()
+    roundedPercent = format(percent,".2f")
     
-
-    """""
-    if len(good)>MIN_MATCH_COUNT:
-        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
-        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
-
-        M, mask = cv.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
-        matchesMask = mask.ravel().tolist()
-
-        h,w = userImage.shape
-        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-        dst = cv.perspectiveTransform(pts,M)
-
-        img2 = cv.polylines(galleryImage,[np.int32(dst)],True,255,3, cv2.LINE_AA)
-
-    else:
-        print("Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT))
-        
-    draw_params = dict(matchColor = (0,255,0), # draw matches in green color
-                   singlePointColor = None,
-                   matchesMask = matchesMask, # draw only inliers
-                   flags = 2)
-
-    img3 = cv.drawMatches(userImage,kp1,img2,kp2,good,None,**draw_params)
-    
-    plt.imshow(img3, 'gray'),plt.show()
-    """""
+    if (float(roundedPercent)<=100):
+        print("Results: " + userFile + " and " + galleryFile + " are {}% similar".format(roundedPercent))
+        img3 = cv.drawMatchesKnn(userImage,kp1,galleryImage,kp2,good,None,flags=2)
+        plt.imshow(img3),plt.show()
+    elif (float(roundedPercent)>=100):
+        print("A result has been hidden where the match was greater than 100%, which shouldn't happen. That was " + userFile + " and " + galleryFile + " which got a score of {}% similarity".format(roundedPercent))
 
 input("Press enter to choose your unmatched file")
 Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
@@ -130,6 +137,8 @@ for i in range(0, len(POSSIBLEMATCHES)):
     galleryImage = cv.imread(POSSIBLEMATCHES[i])
     userImage = cv.imread(USERFILE)
     
+    userImage, galleryImage = imageResizer(userImage, galleryImage)
+        
     greyScaledUserImage = cv.cvtColor(userImage, cv.COLOR_BGR2GRAY)
     greyScaledGalleryImage = cv.cvtColor(galleryImage, cv.COLOR_BGR2GRAY)
     
@@ -141,7 +150,9 @@ for i in range(0, len(POSSIBLEMATCHES)):
     #plt.imshow(claheAppliedUserImage,cmap="gray"),plt.show()
     #plt.imshow(claheAppliedGalleryImage,cmap="gray"),plt.show()
     
-    matchAndCompare(greyScaledUserImage, USERFILE, greyScaledGalleryImage, str(POSSIBLEMATCHES[i]))
+    #matchAndCompare(greyScaledUserImage, USERFILE, greyScaledGalleryImage, str(POSSIBLEMATCHES[i]))
+    matchAndCompare(claheAppliedUserImage, USERFILE, claheAppliedGalleryImage, str(POSSIBLEMATCHES[i]))
+    
     
 cv.waitKey(0)
 cv.destroyAllWindows()
