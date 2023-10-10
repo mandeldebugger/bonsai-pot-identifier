@@ -35,7 +35,7 @@ Ryugaku Marutsune pots are made with a nice hessian texture, just enough to intr
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/be95ef00-add1-4378-a28d-2b655369d1e1)
 ------------------------------
 
-Changing the user image to the Hokido pot, the correct matching result is an astonishing 138%. That might not be as good as it looks and could be down to the quality of the images I've chosen. I'm leaving it stand for the time being, but looks a little too good to be true, particularly as they are different generation marks from the same potter. Even though it looks very promising, I'm reserving judgement on this because I can't explain it. Maybe the algorithm really is that good.
+Wooah. Changing the user image to the Hokido pot, the correct matching result is an astonishing 138%. That might not be as good as it looks and could be down to the quality of the images I've chosen. Even though it looks very promising, I'm reserving judgement on this because I can't explain it. Maybe the algorithm really is that good(?)
 | User Image - hokido-1.jpg | Gallery Image - hokido-2.jpg|
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/919434f9-7303-404b-ae28-89f6e80976ed) |
@@ -63,7 +63,7 @@ A good result, with simlarly contrasting images.
 | User Image - hokido-1.jpg | Gallery Image - ittoen.jpeg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/2ea01962-5216-4860-a8ca-2f79bb6fea7a) |
-| Results are: | **hokido-1.jpg and ittoen.jpeg are 18.65% similar** |
+| Results are: | hokido-1.jpg and ittoen.jpeg are **18.65% similar** |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/54bfef47-d6ea-433b-9d96-093abd742d6b) | 
 ------------------------------
 
@@ -71,7 +71,7 @@ Last result using the Ryugaku Marutsune pot mark. Again this is a reassuringly l
 | User Image - hokido-1.jpg | Gallery Image - ryugaku-marutsune-airbrushed1.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/0d319f1d-8dd1-40a7-938c-437bde0f646f) |
-| Results are: | **hokido-1.jpg and ryugaku-marutsune-airbrushed1.jpg are 10.40% similar** |
+| Results are: | hokido-1.jpg and ryugaku-marutsune-airbrushed1.jpg are **10.40% similar** |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/7101a154-4526-4468-8358-9e5f86864ffb) |
 
 
