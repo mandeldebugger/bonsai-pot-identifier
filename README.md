@@ -4,16 +4,21 @@ This code downloads a list of bonsai pot "chop" marks and then visually identifi
 This following initial comparison is a good result and shows that different borders don't affect the SIFT pattern matching much. It also shows that cropping images to the actual pot mark is important. If you thought a pot-matching algorithm would need to understand kana and kanji to work (Pinyin for Chinese pot marks), think again! :)
 
 ## FAQ
-### Q. Did you cherry-pick these pot marks to show the best results?
-### A. Yes, but also no. I chose the pot mark images that had the least noise and highest resolutions. Try an image with a really low res blurry pot mark like this one:
+Q. Did you cherry-pick these pot marks to show the best results?
+
+A. Yes, but also no. I chose the pot mark images that had the least noise and highest resolutions. Try an image with a really low res blurry pot mark like this one:
 ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/30158207-7224-4786-b3bb-64e38f97b02e) 
-### then yes, you'll see some really odd results.
+then yes, you'll see some really odd results.
 
-### Q. But isn't it instructive/valuable to put poor quality images through this program to test it?
-### A. No, not really. As with everything in computers, garbage in, garbage out. If you don't have a good quality image of the pot mark, go back and get one. The bar is not high, just make it better than the one above.
 
-### Q. I'm not sure if my image is the right way up. Will it still work?
-### A. Yes. But if it's mirrored for some reason (yes, some of the user marks submitted in the FB group are mirrored) then it won't match anything.
+Q. But isn't it instructive/valuable to put poor quality images through this program to test it?
+
+A. No, not really. As with everything in computers, garbage in, garbage out. If you don't have a good quality image of the pot mark, go back and get one. The bar is not high, just make it better than the one above.
+
+
+Q. I'm not sure if my chop mark image is the right way up. Will it still work?
+
+A. Yes. But if it's mirrored for some reason (yes, some of the user marks submitted in the FB group are mirrored) then it won't match anything.
 
 ## Results
 I'm putting the top result at the top. Also note that some of the feature marks picked up by SIFT are outside the pot mark and it's taking a few features from the pot itself. That's not good. I'm working on a way to remove that noise.
