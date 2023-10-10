@@ -2,6 +2,12 @@
 
 import cv2
 import numpy as np
+from tkinter import Tk     # from tkinter import Tk for Python 3.x
+from tkinter.filedialog import askopenfilenames
+import matplotlib.pyplot as plt
+
+USERFILES = []
+
 
 def rotate_image(image, angle):
     # Grab the dimensions of the image and then determine the center
@@ -67,36 +73,48 @@ def perspective_transform(image, corners):
     # Return the transformed image
     return cv2.warpPerspective(image, matrix, (width, height))
 
-image = cv2.imread('housen2.jpg')
-original = image.copy()
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-# defalt we're using
-thresh = cv2.threshold(gray, 0, 255,cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+input("Press enter to choose the files to find the bounding box")
+Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+USERFILES = askopenfilenames() # show an "Open" dialog box and return the path to the selected file    
 
-cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:3]
+for i in range(0, len(USERFILES)):    
+    print("Box found as follows (" + str(i+1) + ") is " + USERFILES[i])
+        
+for i in range(0, len(USERFILES)):
+    userImage = cv2.imread(USERFILES[i])
+    original = userImage.copy()
+    greyImage = cv2.cvtColor(userImage, cv2.COLOR_BGR2GRAY)
+    
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    claheAppliedUserImage = clahe.apply(greyImage)
+    
+    # defalt we're using
+    thresh = cv2.threshold(greyImage, 0, 255,cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
 
-ROI_number = 0
-for c in cnts:
-    x,y,w,h = cv2.boundingRect(c)
-    cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 1)
-    ROI = original[y:y+h, x:x+w]
-    #cv.imwrite('ROI_{}.png'.format(ROI_number), ROI)
-    peri = cv2.arcLength(c, True)
-    approx = cv2.approxPolyDP(c, 0.015 * peri, True)
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+    cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:1]
 
-    if len(approx) == 4:
-        cv2.drawContours(image,[c], 0, (36,255,12), 3)
-        transformed = perspective_transform(original, approx)
-        rotated = rotate_image(transformed, -90)
-        cv2.imshow('transformed', transformed)
-        cv2.imshow('rotated', rotated)
-        #cv2.imwrite('ROI_{}.png'.format(ROI_number), rotated)
-        #cv2.imshow('ROI_{}'.format(ROI_number), rotated)
-        ROI_number += 1
+    ROI_number = 0
+    for c in cnts:
+        x,y,w,h = cv2.boundingRect(c)
+        cv2.rectangle(userImage, (x, y), (x + w, y + h), (36,255,12), 1)
+        ROI = original[y:y+h, x:x+w]
+        #cv.imwrite('ROI_{}.png'.format(ROI_number), ROI)
+        #peri = cv2.arcLength(c, True)
+        #approx = cv2.approxPolyDP(c, 0.015 * peri, True)
 
-cv2.imshow('thresh', thresh)
-cv2.imshow('image', image)
-
-cv2.waitKey()
+        if len(approx) == 4:
+            cv2.drawContours(userImage,[c], 0, (36,255,12), 3)
+            #transformed = perspective_transform(original, approx)
+            #rotated = rotate_image(transformed, -90)
+            #cv2.imwrite('ROI_{}.png'.format(ROI_number), rotated)
+            #cv2.imshow('ROI_{}'.format(ROI_number), rotated)
+            ROI_number += 1
+        print("File is " + str(USERFILES[i]))
+        plt.imshow(userImage),plt.show()
+        print("ROI is:")
+        plt.imshow(ROI),plt.show()
+    
+    cv2.waitKey()
+    cv2.destroyAllWindows()
