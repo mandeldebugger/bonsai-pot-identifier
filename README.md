@@ -7,7 +7,7 @@ I'm putting the top result at the top. Also note that some of the feature marks 
 | User Image - hishoku-1.jpg| Gallery Image - hishoku-2.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/9e8ad47a-33e7-4732-8d60-b8265355abd0) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/d812b852-44b8-4898-9293-29e9cc219cfb) |
-| Results are: | **hishoku-1.jpg and hishoku-2.jpg are 43.89% similar**. |
+| Results are: | hishoku-1.jpg and hishoku-2.jpg are **43.89% similar**. |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/a90b54ee-0008-464b-9115-c5f36dda4252) |
 ------------------------------
 
@@ -15,7 +15,7 @@ The smooth glaze on the Hokido pot means that it doesn't pick up excess features
 | User Image - hishoku-1.jpg | Gallery Image - hokido-1.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/9e8ad47a-33e7-4732-8d60-b8265355abd0) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/881b5a41-7ebc-4925-b558-aab9b1db0f7e) |
-| Results are: | **hishoku-1.jpg and hokido-1.jpg are 29.63% similar**. |
+| Results are: | hishoku-1.jpg and hokido-1.jpg are **29.63% similar**. |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/05f88708-1ead-4e7f-bc1e-649bf8345a8a) |
 ------------------------------
 
@@ -23,11 +23,11 @@ Hmmm. This one was close, but still not the top result, which is the most import
 | User Image - hishoku-1.jpg| Gallery Image - ittoen.jpeg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/9e8ad47a-33e7-4732-8d60-b8265355abd0) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/2ea01962-5216-4860-a8ca-2f79bb6fea7a) |
-| Results are: | **hishoku-1.jpg and ittoen.jpeg are 39.03% similar**. |
+| Results are: | hishoku-1.jpg and ittoen.jpeg are **39.03% similar**. |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/0688acc6-42ad-47de-aea3-73f2b5cc7155) |
 ------------------------------
 
-Ryugaku Marutsune pots are made with a nice hessian texture, just enough to introduce lots of noise into ANY image. So I've cropped this image and airbrushed out the noise. Check out the code for FindTheBoundingBox which will eventually do this cropping automatically using Otsu[^1] thresholding. 
+Ryugaku Marutsune pots are made with a nice hessian texture, just enough to introduce lots of noise into _any_ image of one of these pots. So I've cropped this image and airbrushed out the noise. Check out the code for FindTheBoundingBox which will eventually do this cropping automatically using Otsu[^1] thresholding. 
 | User Image - hishoku-1.jpg | Gallery Image - ryugaku-marutsune-airbrushed1.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/9e8ad47a-33e7-4732-8d60-b8265355abd0) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/d9e61f44-b4c7-414a-8c3c-135118d0693a)
@@ -36,7 +36,7 @@ Ryugaku Marutsune pots are made with a nice hessian texture, just enough to intr
 ------------------------------
 
 Changing the user image to the Hokido pot, the correct matching result is an astonishing 138%. That might not be as good as it looks and could be down to the quality of the images I've chosen. I'm leaving it stand for the time being, but looks a little too good to be true, particularly as they are different generation marks from the same potter. Even though it looks very promising, I'm reserving judgement on this because I can't explain it. Maybe the algorithm really is that good.
-| User Image | Gallery Image |
+| User Image - hokido-1.jpg | Gallery Image - hokido-2.jpg|
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/919434f9-7303-404b-ae28-89f6e80976ed) |
 | Results are: | hokido-1.jpg and hokido-2.jpg are **138.36% similar**
@@ -47,7 +47,7 @@ To change it up a bit again, this time its two marks that really should resemble
 | User Image - hokido-1.jpg | Gallery Image - hattori3.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/25d67394-1852-4d66-a8e4-bb4ebe17bd6e) |
-| Results are: | **hokido-1.jpg and hattori3.jpg are 4.95% similar** |
+| Results are: | hokido-1.jpg and hattori3.jpg are **4.95% similar** |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/46d9a325-a536-4023-97d6-961d851b968b) |
 ------------------------------
 
@@ -55,7 +55,7 @@ So comparing the opposite way to the Hishoku-> Hokido similarity test above give
 | User Image - hokido-1.jpg | Gallery Image - hishoku-1.jpg |
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/9e8ad47a-33e7-4732-8d60-b8265355abd0) |
-| Results are: | **hokido-1.jpg and hishoku-1.jpg are 5.44% similar** |
+| Results are: | hokido-1.jpg and hishoku-1.jpg are **5.44% similar** |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/6e0b1e43-5ab0-41e1-8ba4-ae351de394a3) |
 ------------------------------
 
