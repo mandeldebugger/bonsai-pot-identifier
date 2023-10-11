@@ -7,7 +7,9 @@ This following initial comparison is a good result and shows that different bord
 Q. Did you cherry-pick these pot marks to show the best results?
 
 A. Yes, but also no. I chose the pot mark images that had the least noise and highest resolutions. Try an image with a really low res blurry pot mark like this one:
+
 ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/30158207-7224-4786-b3bb-64e38f97b02e) 
+
 then yes, you'll see some really odd results.
 
 
@@ -53,7 +55,7 @@ Ryugaku Marutsune pots are made with a nice hessian texture, just enough to intr
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/be95ef00-add1-4378-a28d-2b655369d1e1)
 ------------------------------
 
-Wooah. Changing the user image to the Hokido pot, the correct matching result is an astonishing 138%. That might not be as good as it looks and could be down to the quality of the images I've chosen. Even though it looks very promising, I'm reserving judgement on this because I can't explain it. Maybe the algorithm really is that good(?)
+Wooah. Changing the user image to the Hokido pot, the correct matching result is an astonishing 138%. Even though this looks very promising, I'm reserving judgement on this because I can't explain it. The hokido-2.jpg is really blurry and that's known to give odd results. I doubt the algorithm is that good.
 | User Image - hokido-1.jpg | Gallery Image - hokido-2.jpg|
 | ---------- | ------------- |
 | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/055ca81a-3e30-404d-a444-a60ddfa36777) | ![image](https://github.com/mandeldebugger/bonsai-pot-identifier/assets/2265446/919434f9-7303-404b-ae28-89f6e80976ed) |
